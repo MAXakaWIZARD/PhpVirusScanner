@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Console\Helper\Table;
+use PhpVirusScanner\Helper\Table;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\TableStyle;
 
@@ -42,6 +42,13 @@ class Scan extends AbstractCommand
             InputOption::VALUE_NONE,
             'If set, command will delete all infected files'
         );
+
+        $this->addOption(
+            'show-full-paths',
+            null,
+            InputOption::VALUE_NONE,
+            'If set, full file paths will be displayed'
+        );
     }
 
     /**
@@ -67,6 +74,7 @@ class Scan extends AbstractCommand
         }
 
         $doDelete = (bool) $input->getOption('delete');
+        $showFullPaths = (bool) $input->getOption('show-full-paths');
 
         $output->writeln("Target signature: {$signature}");
         $output->writeln("Scanning dir {$dir}...");
@@ -92,14 +100,24 @@ class Scan extends AbstractCommand
             $table = new Table($output);
             $table->setHeaders(['#', 'Path', 'Size']);
 
+            $style = new TableStyle();
+            $style->setPadType(STR_PAD_LEFT);
+
+            $table->setColumnStyle(2, $style);
+
             $counter = 0;
             $deletedCounter = 0;
             $deleteErrorsCounter = 0;
+            $dirStrLength = strlen($dir);
             foreach ($finder as $file) {
                 /** @var \SplFileinfo $file */
 
                 $counter++;
-                $table->addRow([$counter, $file->getRealPath(), number_format($file->getSize(), 0, '.', ' ')]);
+                $filePath = $file->getRealPath();
+                if (!$showFullPaths) {
+                    $filePath = substr($filePath, $dirStrLength);
+                }
+                $table->addRow([$counter, $filePath, number_format($file->getSize(), 0, '.', ' ')]);
 
                 if ($doDelete) {
                     if (@unlink($file->getRealPath())) {
