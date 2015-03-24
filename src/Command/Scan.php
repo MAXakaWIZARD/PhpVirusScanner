@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Helper\TableStyle;
 
 /**
  *
@@ -65,14 +66,62 @@ class Scan extends AbstractCommand
             return;
         }
 
-        $output->writeln('Scanning dir ' . $dir . ' ...');
+        $doDelete = (bool) $input->getOption('delete');
+
+        $output->writeln("Target signature: {$signature}");
+        $output->writeln("Scanning dir {$dir}...");
+
+        $filter = function (\SplFileInfo $file) use ($signature) {
+            if (!$file->isReadable()) {
+                return false;
+            }
+
+            $content = $file->getContents();
+            if (!$content) {
+                return false;
+            }
+
+            $contains = strpos($content, $signature) !== false;
+            return $contains;
+        };
 
         $finder = new Finder();
-        $finder->files()->followLinks()->in($dir)->name('*.php');
+        $finder->files()->followLinks()->in($dir)->name('*.php')->filter($filter);
 
-        foreach ($finder as $file) {
-            /** @var \SplFileinfo $file */
-            $file->getPath();
+        if (count($finder)) {
+            $table = new Table($output);
+            $table->setHeaders(['#', 'Path', 'Size']);
+
+            $counter = 0;
+            $deletedCounter = 0;
+            $deleteErrorsCounter = 0;
+            foreach ($finder as $file) {
+                /** @var \SplFileinfo $file */
+
+                $counter++;
+                $table->addRow([$counter, $file->getRealPath(), number_format($file->getSize(), 0, '.', ' ')]);
+
+                if ($doDelete) {
+                    if (@unlink($file->getRealPath())) {
+                        $deletedCounter++;
+                    } else {
+                        $deleteErrorsCounter++;
+                    }
+                }
+            }
+
+            $table->render();
+
+            $output->writeln('Total infected files: ' . $counter);
+
+            if ($doDelete) {
+                $output->writeln('Deleted files: ' . $deletedCounter);
+                if ($deleteErrorsCounter > 0) {
+                    $output->writeln('Failed to delete: ' . $deleteErrorsCounter);
+                }
+            }
+        } else {
+            $output->writeln('Nothing found!');
         }
 
         $this->printProfilerOutput($output);
