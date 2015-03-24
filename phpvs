@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+
+if (php_sapi_name() !== 'cli') {
+    exit;
+}
+
+error_reporting(E_ALL);
+
+define('BASE_PATH', realpath(dirname(__FILE__)));
+
+ini_set('display_errors', 1);
+date_default_timezone_set('Europe/Kiev');
+
+require(BASE_PATH . '/vendor/autoload.php');
+
+$console = new \Symfony\Component\Console\Application();
+$console->setName('PHP virus scanner');
+$console->setVersion('1.0');
+$console->setCatchExceptions(true);
+
+$console->add(new PhpVirusScanner\Command\Scan($console));
+
+$console->run();
