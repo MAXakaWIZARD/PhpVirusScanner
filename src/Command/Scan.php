@@ -77,7 +77,7 @@ class Scan extends AbstractCommand
 
         $signature = $input->getArgument('signature');
         if (!$signature) {
-            $output->writeln('Specify signature.');
+            $output->writeln('Invalid signature.');
             return;
         }
 
@@ -88,78 +88,88 @@ class Scan extends AbstractCommand
         $output->writeln("Target signature: {$signature}");
         $output->writeln("Scanning dir {$dir}...");
 
-        $totalAnalyzedFilesCount = 0;
-
-        $filter = function (\SplFileInfo $file) use ($signature, &$totalAnalyzedFilesCount) {
-            $totalAnalyzedFilesCount++;
-
-            if (!$file->isReadable()) {
-                return false;
-            }
-
-            $content = $file->getContents();
-            if (!$content) {
-                return false;
-            }
-
-            $contains = strpos($content, $signature) !== false;
-            return $contains;
-        };
-
         $finder = new Finder();
-        $finder->files()->followLinks()->in($dir)->name('*.php')->filter($filter);
+        $finder->files()->followLinks()->in($dir)->name('*.php');
         if ($targetSize) {
             $finder->size('==' . $targetSize);
         }
 
-        if (count($finder)) {
-            $table = new Table($output);
-            $table->setHeaders(['#', 'Path', 'Size']);
+        $table = new Table($output);
+        $table->setHeaders(['#', 'Path', 'Size']);
 
-            $style = new TableStyle();
-            $style->setPadType(STR_PAD_LEFT);
+        $style = new TableStyle();
+        $style->setPadType(STR_PAD_LEFT);
 
-            $table->setColumnStyle(2, $style);
+        $table->setColumnStyle(2, $style);
 
-            $counter = 0;
-            $deletedCounter = 0;
-            $deleteErrorsCounter = 0;
-            $dirStrLength = strlen($dir);
-            foreach ($finder as $file) {
-                /** @var \SplFileinfo $file */
+        $analyzedCount = 0;
+        $infectedCount = 0;
+        $deletedCount = 0;
+        $deleteErrorsCount = 0;
+        $dirStrLength = strlen($dir);
+        foreach ($finder as $file) {
+            $analyzedCount++;
 
-                $counter++;
-                $filePath = $file->getRealPath();
-                if (!$showFullPaths) {
-                    $filePath = substr($filePath, $dirStrLength);
-                }
-                $table->addRow([$counter, $filePath, number_format($file->getSize(), 0, '.', ' ')]);
-
-                if ($doDelete) {
-                    if (@unlink($file->getRealPath())) {
-                        $deletedCounter++;
-                    } else {
-                        $deleteErrorsCounter++;
-                    }
-                }
+            if (!$this->isInfected($file, $signature)) {
+                continue;
             }
 
-            $table->render();
+            /** @var \SplFileinfo $file */
 
-            $output->writeln('Total infected files: ' . $counter);
+            $infectedCount++;
+            $filePath = $file->getRealPath();
+            if (!$showFullPaths) {
+                $filePath = substr($filePath, $dirStrLength);
+            }
+            $table->addRow([$infectedCount, $filePath, number_format($file->getSize(), 0, '.', ' ')]);
 
             if ($doDelete) {
-                $output->writeln('Deleted files: ' . $deletedCounter);
-                if ($deleteErrorsCounter > 0) {
-                    $output->writeln('Failed to delete: ' . $deleteErrorsCounter);
+                if (@unlink($file->getRealPath())) {
+                    $deletedCount++;
+                } else {
+                    $deleteErrorsCount++;
+                }
+            }
+        }
+
+        if ($infectedCount > 0) {
+            $table->render();
+
+            $output->writeln('Total infected files: ' . $infectedCount);
+
+            if ($doDelete) {
+                $output->writeln('Deleted files: ' . $deletedCount);
+                if ($deleteErrorsCount > 0) {
+                    $output->writeln('Failed to delete: ' . $deleteErrorsCount);
                 }
             }
         } else {
             $output->writeln('Nothing found!');
         }
 
-        $output->writeln('Total analyzed files: ' . $totalAnalyzedFilesCount);
+        $output->writeln('Total analyzed files: ' . $analyzedCount);
 
         $this->printProfilerOutput($output);
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     * @param              $signature
+     *
+     * @return bool
+     */
+    protected function isInfected(\SplFileInfo $file, $signature)
+    {
+        if (!$file->isReadable()) {
+            return false;
+        }
+
+        $content = $file->getContents();
+        if (!$content) {
+            return false;
+        }
+
+        $contains = strpos($content, $signature) !== false;
+        return $contains;
     }
 }
