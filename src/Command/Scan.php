@@ -49,6 +49,14 @@ class Scan extends AbstractCommand
             InputOption::VALUE_NONE,
             'If set, full file paths will be displayed'
         );
+
+        $this->addOption(
+            'size',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'If set, only files with specified size will be examined',
+            0
+        );
     }
 
     /**
@@ -75,6 +83,7 @@ class Scan extends AbstractCommand
 
         $doDelete = (bool) $input->getOption('delete');
         $showFullPaths = (bool) $input->getOption('show-full-paths');
+        $targetSize = intval($input->getOption('size'));
 
         $output->writeln("Target signature: {$signature}");
         $output->writeln("Scanning dir {$dir}...");
@@ -95,6 +104,9 @@ class Scan extends AbstractCommand
 
         $finder = new Finder();
         $finder->files()->followLinks()->in($dir)->name('*.php')->filter($filter);
+        if ($targetSize) {
+            $finder->size('==' . $targetSize);
+        }
 
         if (count($finder)) {
             $table = new Table($output);
