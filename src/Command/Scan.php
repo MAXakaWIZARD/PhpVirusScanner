@@ -88,7 +88,11 @@ class Scan extends AbstractCommand
         $output->writeln("Target signature: {$signature}");
         $output->writeln("Scanning dir {$dir}...");
 
-        $filter = function (\SplFileInfo $file) use ($signature) {
+        $totalAnalyzedFilesCount = 0;
+
+        $filter = function (\SplFileInfo $file) use ($signature, &$totalAnalyzedFilesCount) {
+            $totalAnalyzedFilesCount++;
+
             if (!$file->isReadable()) {
                 return false;
             }
@@ -153,6 +157,8 @@ class Scan extends AbstractCommand
         } else {
             $output->writeln('Nothing found!');
         }
+
+        $output->writeln('Total analyzed files: ' . $totalAnalyzedFilesCount);
 
         $this->printProfilerOutput($output);
     }
