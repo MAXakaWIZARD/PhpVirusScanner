@@ -1,0 +1,3 @@
+<?php
+
+//REALLY_BAD_SIGNATURE
