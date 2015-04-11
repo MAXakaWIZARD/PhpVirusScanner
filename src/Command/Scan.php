@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use PhpVirusScanner\Helper\Table;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\TableStyle;
@@ -114,7 +115,7 @@ class Scan extends AbstractCommand
                 continue;
             }
 
-            /** @var \SplFileinfo $file */
+            /** @var SplFileinfo $file */
 
             $infectedCount++;
             $filePath = $file->getRealPath();
@@ -153,7 +154,7 @@ class Scan extends AbstractCommand
     }
 
     /**
-     * @param \SplFileInfo $file
+     * @param SplFileInfo $file
      * @param              $signature
      *
      * @return bool

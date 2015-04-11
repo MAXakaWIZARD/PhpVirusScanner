@@ -46,11 +46,11 @@ class Table
     private $columnWidths = [];
 
     /**
-     * Number of columns cache.
+     * Number of columns.
      *
-     * @var array
+     * @var int
      */
-    private $numberOfColumns;
+    private $numberOfColumns = null;
 
     /**
      * @var OutputInterface
@@ -67,13 +67,16 @@ class Table
      */
     private $columnStyles = [];
 
-    private static $styles;
+    private static $styles = null;
 
+    /**
+     * @param OutputInterface $output
+     */
     public function __construct(OutputInterface $output)
     {
         $this->output = $output;
 
-        if (!self::$styles) {
+        if (is_null(self::$styles)) {
             self::$styles = self::initStyles();
         }
 
@@ -88,7 +91,7 @@ class Table
      */
     public static function setStyleDefinition($name, TableStyle $style)
     {
-        if (!self::$styles) {
+        if (is_null(self::$styles)) {
             self::$styles = self::initStyles();
         }
 
@@ -104,7 +107,7 @@ class Table
      */
     public static function getStyleDefinition($name)
     {
-        if (!self::$styles) {
+        if (is_null(self::$styles)) {
             self::$styles = self::initStyles();
         }
 
