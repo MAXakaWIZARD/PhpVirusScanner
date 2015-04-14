@@ -14,7 +14,6 @@
         "symfony/finder": "2.6.*"
     },
     "require-dev": {
-        "symfony/process": "2.6.*",
         "satooshi/php-coveralls": "dev-master"
     }
 }
