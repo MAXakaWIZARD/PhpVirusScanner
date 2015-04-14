@@ -6,8 +6,7 @@ php:
   - 5.6
 
 before_script:
-  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then composer install -n ; fi
-  - if [[ "$TRAVIS_PHP_VERSION" != '5.6' ]]; then composer install --no-dev -n ; fi
+  - composer install -n
 
 script:
   - mkdir -p build/logs
