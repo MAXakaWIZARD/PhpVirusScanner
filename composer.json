@@ -1,6 +1,13 @@
 {
     "name": "maxakawizard/php-virus-scanner",
     "description": "PHP Virus Scanner",
+    "authors": [
+        {
+            "email": "maxakawizard@gmail.com",
+            "name": "Max Grigorian",
+            "homepage": "https://github.com/MAXakaWIZARD"
+        }
+    ],
     "license": "MIT",
     "minimum-stability": "stable",
     "autoload": {
