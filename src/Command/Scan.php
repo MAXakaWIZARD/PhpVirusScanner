@@ -70,52 +70,42 @@ class Scan extends AbstractCommand
     {
         set_time_limit(0);
 
-        $dir = $input->getArgument('dir');
+        $this->input = $input;
+        $this->output = $output;
+
+        $dir = $this->input->getArgument('dir');
         if (!is_dir($dir) || !is_readable($dir)) {
-            $output->writeln('Specified directory not exists or is not readable.');
+            $this->output->writeln('Specified directory not exists or is not readable.');
             return;
         }
 
-        $signature = $input->getArgument('signature');
+        $signature = $this->input->getArgument('signature');
         if (!$signature) {
-            $output->writeln('Invalid signature.');
+            $this->output->writeln('Invalid signature.');
             return;
         }
 
-        $doDelete = (bool) $input->getOption('delete');
-        $showFullPaths = (bool) $input->getOption('show-full-paths');
-        $targetSize = intval($input->getOption('size'));
+        $doDelete = (bool) $this->input->getOption('delete');
+        $showFullPaths = (bool) $this->input->getOption('show-full-paths');
 
-        $output->writeln("Target signature: {$signature}");
-        $output->writeln("Scanning dir {$dir}...");
+        $this->output->writeln("Target signature: {$signature}");
+        $this->output->writeln("Scanning dir {$dir}...");
 
-        $finder = new Finder();
-        $finder->files()->followLinks()->in($dir)->name('*.php');
-        if ($targetSize) {
-            $finder->size('==' . $targetSize);
-        }
-
-        $table = new Table($output);
-        $table->setHeaders(['#', 'Path', 'Size']);
-
-        $style = new TableStyle();
-        $style->setPadType(STR_PAD_LEFT);
-
-        $table->setColumnStyle(2, $style);
+        $table = $this->getTable();
 
         $analyzedCount = 0;
         $infectedCount = 0;
         $deletedCount = 0;
         $deleteErrorsCount = 0;
         $dirStrLength = strlen($dir);
-        foreach ($finder as $file) {
+
+        /** @var SplFileinfo $file */
+        foreach ($this->searchFiles($dir) as $file) {
             $analyzedCount++;
 
             if (!$this->isInfected($file, $signature)) {
                 continue;
             }
-
-            /** @var SplFileinfo $file */
 
             $infectedCount++;
             $filePath = $file->getRealPath();
@@ -136,21 +126,55 @@ class Scan extends AbstractCommand
         if ($infectedCount > 0) {
             $table->render();
 
-            $output->writeln('Total infected files: ' . $infectedCount);
+            $this->output->writeln('Total infected files: ' . $infectedCount);
 
             if ($doDelete) {
-                $output->writeln('Deleted files: ' . $deletedCount);
+                $this->output->writeln('Deleted files: ' . $deletedCount);
                 if ($deleteErrorsCount > 0) {
-                    $output->writeln('Failed to delete: ' . $deleteErrorsCount);
+                    $this->output->writeln('Failed to delete: ' . $deleteErrorsCount);
                 }
             }
         } else {
-            $output->writeln('Nothing found!');
+            $this->output->writeln('Nothing found!');
         }
 
-        $output->writeln('Total analyzed files: ' . $analyzedCount);
+        $this->output->writeln('Total analyzed files: ' . $analyzedCount);
 
-        $this->printProfilerOutput($output);
+        $this->printProfilerOutput();
+    }
+
+    /**
+     * @return Table
+     */
+    protected function getTable()
+    {
+        $table = new Table($this->output);
+        $table->setHeaders(['#', 'Path', 'Size']);
+
+        $style = new TableStyle();
+        $style->setPadType(STR_PAD_LEFT);
+
+        $table->setColumnStyle(2, $style);
+
+        return $table;
+    }
+
+    /**
+     * @param $dir
+     *
+     * @return Finder
+     */
+    protected function searchFiles($dir)
+    {
+        $targetSize = (int) $this->input->getOption('size');
+
+        $finder = new Finder();
+        $finder->files()->followLinks()->in($dir)->name('*.php');
+        if ($targetSize) {
+            $finder->size('==' . $targetSize);
+        }
+
+        return $finder;
     }
 
     /**
@@ -159,7 +183,7 @@ class Scan extends AbstractCommand
      *
      * @return bool
      */
-    protected function isInfected(\SplFileInfo $file, $signature)
+    protected function isInfected(SplFileInfo $file, $signature)
     {
         if (!$file->isReadable()) {
             return false;

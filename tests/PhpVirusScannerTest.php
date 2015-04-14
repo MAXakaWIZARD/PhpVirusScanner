@@ -65,6 +65,38 @@ class PhpVirusScannerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @dataProvider providerDeleting
+     *
+     * @param array $params
+     */
+    public function testDeleting(array $params)
+    {
+        file_put_contents(TEST_DATA_PATH . '/3.php', "<?php \n DEADLY_SIGNATURE");
+        $this->assertFileExists(TEST_DATA_PATH . '/3.php');
+
+        $this->commandTester->execute($params['args']);
+        $output = $this->commandTester->getDisplay();
+
+        foreach ($params['contains'] as $message) {
+            $this->assertNotSame(
+                false,
+                strpos($output, $message),
+                "\"$message\" should be contained in \"$output\""
+            );
+        }
+
+        foreach ($params['not_contains'] as $message) {
+            $this->assertSame(
+                false,
+                strpos($output, $message),
+                "\"$message\" should not be contained in \"$output\""
+            );
+        }
+
+        $this->assertFileNotExists(TEST_DATA_PATH . '/3.php');
+    }
+
+    /**
      * @return array
      */
     public function providerGeneral()
@@ -98,7 +130,7 @@ class PhpVirusScannerTest extends \PHPUnit_Framework_TestCase
                 'contains' => [
                     TEST_DATA_PATH . '/1.php',
                     'Total infected files: 1',
-                    'Total analyzed files: 2'
+                    'Total analyzed files: 3'
                 ],
                 'not_contains' => []
             ]],
@@ -126,9 +158,34 @@ class PhpVirusScannerTest extends \PHPUnit_Framework_TestCase
                 ],
                 'contains' => [
                     'Nothing found!',
-                    'Total analyzed files: 2'
+                    'Total analyzed files: 3'
                 ],
                 'not_contains' => [TEST_DATA_PATH . '/1.php']
+            ]]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function providerDeleting()
+    {
+        return [
+            [[
+                 'args' => [
+                     'command' => 'scan',
+                     'dir' => TEST_DATA_PATH,
+                     'signature' => 'DEADLY_SIGNATURE',
+                     '--show-full-paths' => true,
+                     '--delete' => true
+                 ],
+                 'contains' => [
+                     TEST_DATA_PATH . '/3.php',
+                     'Total infected files: 1',
+                     'Total analyzed files: 4',
+                     'Deleted files: 1'
+                 ],
+                 'not_contains' => [TEST_DATA_PATH . '/1.php']
             ]]
         ];
     }

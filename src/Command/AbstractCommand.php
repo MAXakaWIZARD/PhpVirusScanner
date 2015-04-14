@@ -7,20 +7,34 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Application;
 
 class AbstractCommand extends Command
 {
+    /**
+     * @var float
+     */
     protected $startTime;
 
     /**
-     * @var \Symfony\Component\Console\Application
+     * @var Application
      */
     protected $console;
 
     /**
+     * @var InputInterface
+     */
+    protected $input;
+
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
+
+    /**
      *
      */
-    public function __construct(\Symfony\Component\Console\Application $console)
+    public function __construct(Application $console)
     {
         $this->startTime = microtime(true);
 
@@ -30,9 +44,9 @@ class AbstractCommand extends Command
     }
 
     /**
-     * @param OutputInterface $output
+     *
      */
-    protected function printProfilerOutput(OutputInterface $output)
+    protected function printProfilerOutput()
     {
         $end = microtime(true);
         $totalSecs = $end - $this->startTime;
@@ -40,10 +54,9 @@ class AbstractCommand extends Command
         $mins = floor($totalSecs / 60);
         $secs = $totalSecs - ($mins * 60);
 
-        $output->write('Done in: ' . sprintf('%.3f', $totalSecs) . ' secs');
-        $output->writeln(" ({$mins} mins " . sprintf('%.3f', $secs) . " secs)");
+        $this->output->write('Done in: ' . sprintf('%.3f', $totalSecs) . ' secs');
+        $this->output->writeln(" ({$mins} mins " . sprintf('%.3f', $secs) . " secs)");
 
-
-        $output->writeln('Max mem: ' . sprintf('%.3f', memory_get_peak_usage() / 1048576) . ' Mb');
+        $this->output->writeln('Max mem: ' . sprintf('%.3f', memory_get_peak_usage() / 1048576) . ' Mb');
     }
 }
