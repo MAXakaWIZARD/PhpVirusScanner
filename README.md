@@ -9,6 +9,9 @@ PHP Virus Scanner
 
 This is a console tool for scanning files for virus signatures.
 
+The code is compliant with [PSR-4](http://www.php-fig.org/psr/4/), [PSR-1](http://www.php-fig.org/psr/1/), and [PSR-2](http://www.php-fig.org/psr/2/).
+If you notice compliance oversights, please send a patch via pull request.
+
 Usage
 -----------------
 For correct signature interpretation, use only single quotes in command line.
@@ -23,3 +26,7 @@ This will delete all `*.php` files containing code `eval(base64_decode($abc))`:
 ```bash
 php phpvs scan /path/to/dir 'eval(base64_decode($abc))' --delete
 ```
+
+License
+-----------------
+This library is released under [MIT](http://www.tldrlegal.com/license/mit-license) license.
