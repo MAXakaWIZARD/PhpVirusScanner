@@ -2,9 +2,9 @@ PHP Virus Scanner
 ========================
 [![Build Status](https://api.travis-ci.org/MAXakaWIZARD/PhpVirusScanner.png?branch=master)](https://travis-ci.org/MAXakaWIZARD/PhpVirusScanner) 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/MAXakaWIZARD/PhpVirusScanner/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/MAXakaWIZARD/PhpVirusScanner/?branch=master)
+[![Coverage Status](https://coveralls.io/repos/MAXakaWIZARD/PhpVirusScanner/badge.svg?branch=master)](https://coveralls.io/r/MAXakaWIZARD/PhpVirusScanner?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/maxakawizard/php-virus-scanner/v/stable.svg)](https://packagist.org/packages/maxakawizard/php-virus-scanner) 
 [![Total Downloads](https://poser.pugx.org/maxakawizard/php-virus-scanner/downloads.svg)](https://packagist.org/packages/maxakawizard/php-virus-scanner) 
-[![Latest Unstable Version](https://poser.pugx.org/maxakawizard/php-virus-scanner/v/unstable.svg)](https://packagist.org/packages/maxakawizard/php-virus-scanner) 
 [![License](https://poser.pugx.org/maxakawizard/php-virus-scanner/license.svg)](https://packagist.org/packages/maxakawizard/php-virus-scanner)
 
 This is a console tool for scanning files for virus signatures.
