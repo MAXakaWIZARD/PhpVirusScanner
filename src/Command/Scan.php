@@ -94,6 +94,7 @@ class Scan extends AbstractCommand
         $table = $this->getTable();
 
         $analyzedCount = 0;
+        $unreadableCount = 0;
         $infectedCount = 0;
         $deletedCount = 0;
         $deleteErrorsCount = 0;
@@ -102,6 +103,11 @@ class Scan extends AbstractCommand
         /** @var SplFileinfo $file */
         foreach ($this->searchFiles($dir) as $file) {
             $analyzedCount++;
+
+            if (!$file->isReadable()) {
+                $unreadableCount++;
+                continue;
+            }
 
             if (!$this->isInfected($file, $signature)) {
                 continue;
@@ -138,6 +144,9 @@ class Scan extends AbstractCommand
             $this->output->writeln('Nothing found!');
         }
 
+        if ($unreadableCount > 0) {
+            $this->output->writeln('Non-readable files: ' . $unreadableCount);
+        }
         $this->output->writeln('Total analyzed files: ' . $analyzedCount);
 
         $this->printProfilerOutput();
@@ -186,7 +195,7 @@ class Scan extends AbstractCommand
     protected function isInfected(SplFileInfo $file, $signature)
     {
         if (!$file->isReadable()) {
-            return false;
+            return true;
         }
 
         $content = $file->getContents();
