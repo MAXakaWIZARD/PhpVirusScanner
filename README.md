@@ -3,9 +3,9 @@ PHP Virus Scanner
 [![Build Status](https://api.travis-ci.org/MAXakaWIZARD/PhpVirusScanner.png?branch=master)](https://travis-ci.org/MAXakaWIZARD/PhpVirusScanner) 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/MAXakaWIZARD/PhpVirusScanner/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/MAXakaWIZARD/PhpVirusScanner/?branch=master)
 [![Coverage Status](https://coveralls.io/repos/MAXakaWIZARD/PhpVirusScanner/badge.svg?branch=master)](https://coveralls.io/r/MAXakaWIZARD/PhpVirusScanner?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/maxakawizard/php-virus-scanner/v/stable.svg)](https://packagist.org/packages/maxakawizard/php-virus-scanner) 
-[![Total Downloads](https://poser.pugx.org/maxakawizard/php-virus-scanner/downloads.svg)](https://packagist.org/packages/maxakawizard/php-virus-scanner) 
-[![License](https://poser.pugx.org/maxakawizard/php-virus-scanner/license.svg)](https://packagist.org/packages/maxakawizard/php-virus-scanner)
+[![GitHub tag](https://img.shields.io/github/tag/MAXakaWIZARD/PhpVirusScanner.svg?label=latest)](https://packagist.org/packages/maxakawizard/php-virus-scanner) 
+[![Minimum PHP Version](http://img.shields.io/badge/php-%3E%3D%205.4-8892BF.svg)](https://php.net/)
+[![License](https://img.shields.io/packagist/l/maxakawizard/php-virus-scanner.svg)](https://packagist.org/packages/maxakawizard/php-virus-scanner)
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/5c8c90f2-7397-4bfd-9107-bed3f80643eb/big.png)](https://insight.sensiolabs.com/projects/5c8c90f2-7397-4bfd-9107-bed3f80643eb)
 
