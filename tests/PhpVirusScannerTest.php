@@ -3,7 +3,7 @@ namespace PhpVirusScanner\Tests;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-use PhpVirusScanner\Command\Scan as ScanCommand;
+use PhpVirusScanner\Command\ScanCommand;
 
 /**
  *
@@ -58,6 +58,10 @@ class PhpVirusScannerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGeneral(array $params)
     {
+        if ($params['exception'] !== '') {
+            $this->setExpectedException('\Exception', $params['exception']);
+        }
+
         $this->commandTester->execute($params['args']);
         $output = $this->commandTester->getDisplay();
 
@@ -160,7 +164,8 @@ class PhpVirusScannerTest extends \PHPUnit_Framework_TestCase
                     'dir' => TEST_DATA_PATH . '_not_exists',
                     'signature' => 'UNKNOWN_SIGNATURE'
                 ],
-                'contains' => ['Specified directory not exists or is not readable'],
+                'exception' => 'Specified directory not exists or is not readable',
+                'contains' => [],
                 'not_contains' => []
             ]],
             [[
@@ -169,7 +174,8 @@ class PhpVirusScannerTest extends \PHPUnit_Framework_TestCase
                     'dir' => TEST_DATA_PATH,
                     'signature' => ''
                 ],
-                'contains' => ['Invalid signature'],
+                'exception' => 'Invalid signature',
+                'contains' => [],
                 'not_contains' => []
             ]],
             [[
@@ -179,6 +185,7 @@ class PhpVirusScannerTest extends \PHPUnit_Framework_TestCase
                     'signature' => 'REALLY_BAD_SIGNATURE',
                     '--show-full-paths' => true
                 ],
+                'exception' => '',
                 'contains' => [
                     TEST_DATA_PATH . '/1.php',
                     'Total infected files: 1',
@@ -194,6 +201,7 @@ class PhpVirusScannerTest extends \PHPUnit_Framework_TestCase
                      '--show-full-paths' => false,
                      '--size' => '29'
                  ],
+                 'exception' => '',
                  'contains' => [
                      '1.php',
                      'Total infected files: 1',
@@ -208,6 +216,7 @@ class PhpVirusScannerTest extends \PHPUnit_Framework_TestCase
                     'signature' => 'UNKNOWN_SIGNATURE',
                     '--show-full-paths' => true
                 ],
+                'exception' => '',
                 'contains' => [
                     'Nothing found!',
                     'Total analyzed files: 3'

@@ -19,6 +19,6 @@ $console->setName('PHP virus scanner');
 $console->setVersion('1.0');
 $console->setCatchExceptions(true);
 
-$console->add(new PhpVirusScanner\Command\Scan($console));
+$console->add(new PhpVirusScanner\Command\ScanCommand($console));
 
 $console->run();
