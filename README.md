@@ -7,6 +7,8 @@ PHP Virus Scanner
 [![Total Downloads](https://poser.pugx.org/maxakawizard/php-virus-scanner/downloads.svg)](https://packagist.org/packages/maxakawizard/php-virus-scanner) 
 [![License](https://poser.pugx.org/maxakawizard/php-virus-scanner/license.svg)](https://packagist.org/packages/maxakawizard/php-virus-scanner)
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/5c8c90f2-7397-4bfd-9107-bed3f80643eb/big.png)](https://insight.sensiolabs.com/projects/5c8c90f2-7397-4bfd-9107-bed3f80643eb)
+
 This is a console tool for scanning files for virus signatures.
 
 The code is compliant with [PSR-4](http://www.php-fig.org/psr/4/), [PSR-1](http://www.php-fig.org/psr/1/), and [PSR-2](http://www.php-fig.org/psr/2/).
