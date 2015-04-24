@@ -2,6 +2,7 @@ PHP Virus Scanner
 ========================
 [![Build Status](https://api.travis-ci.org/MAXakaWIZARD/PhpVirusScanner.png?branch=master)](https://travis-ci.org/MAXakaWIZARD/PhpVirusScanner) 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/MAXakaWIZARD/PhpVirusScanner/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/MAXakaWIZARD/PhpVirusScanner/?branch=master)
+[![Code Climate](https://codeclimate.com/github/MAXakaWIZARD/PhpVirusScanner/badges/gpa.svg)](https://codeclimate.com/github/MAXakaWIZARD/PhpVirusScanner)
 [![Coverage Status](https://coveralls.io/repos/MAXakaWIZARD/PhpVirusScanner/badge.svg?branch=master)](https://coveralls.io/r/MAXakaWIZARD/PhpVirusScanner?branch=master)
 [![GitHub tag](https://img.shields.io/github/tag/MAXakaWIZARD/PhpVirusScanner.svg?label=latest)](https://packagist.org/packages/maxakawizard/php-virus-scanner) 
 [![Minimum PHP Version](http://img.shields.io/badge/php-%3E%3D%205.4-8892BF.svg)](https://php.net/)
