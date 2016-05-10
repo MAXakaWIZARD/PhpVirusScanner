@@ -21,6 +21,6 @@
         "symfony/finder": "2.6.*"
     },
     "require-dev": {
-        "satooshi/php-coveralls": "dev-master"
+        "satooshi/php-coveralls": "~1.0"
     }
 }
